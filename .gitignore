@@ -1,0 +1,4 @@
+*.exe
+**/Debug/*
+**/Release/*
+**/Packages/*
