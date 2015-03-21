@@ -8,6 +8,7 @@ using Hashcode2015.Core.Model;
 using HashCode2015.Model;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http.Interfaces;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Data.Entity.Query;
 
@@ -51,14 +52,21 @@ namespace Hashcode2015.Web.Controllers
 			List<Server> servers;
 			List<Point> deadSlots;
 
-			var inputFilename = "dc.in";
+			//var inputFilename = "dc.in";
 
+			//if (inputFile == 1)
+			//	inputFilename = "sample.in";
+			
+			//var filePath = Path.Combine("inputFiles", inputFilename);
+
+			Stream inStream = null;
 			if (inputFile == 1)
-				inputFilename = "sample.in";
+				inStream = InputFile.explanationFile.AsStream();
+			else
+				inStream = InputFile.qualificationFile.AsStream();
+			
 
-			var filePath = Path.Combine("inputFiles", inputFilename);
-
-			InputReader.Parse(_env.WebRootFileProvider.GetFileInfo(filePath).CreateReadStream(), ref rowsCount, ref slotsCount, ref poolCount, out deadSlots, out servers);
+			InputReader.Parse(inStream, ref rowsCount, ref slotsCount, ref poolCount, out deadSlots, out servers);
 
 			var datacenter = new DataCenter(rowsCount, slotsCount, deadSlots, poolCount, servers);
 

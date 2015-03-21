@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 
 namespace Hashcode2015.Core
 {
 	public static class Helpers
     {
-        public static void ForEach<T>(this IEnumerable<T> sequence, Action<T> action)
+		public static Stream AsStream(this string input)
+		{
+			// convert string to stream
+			byte[] byteArray = Encoding.UTF8.GetBytes(input);
+			//byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+			MemoryStream stream = new MemoryStream(byteArray);
+			return stream;
+		}
+		public static void ForEach<T>(this IEnumerable<T> sequence, Action<T> action)
         {
             //TODO : GUARD HERE argument null checking omitted
             foreach (T item in sequence) action(item);
