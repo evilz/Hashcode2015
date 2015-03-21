@@ -1,0 +1,55 @@
+﻿    <style>
+        table.datacenter {
+            font-size: 0.8em;
+        }
+
+        .datacenter tr {
+            height: 30px;
+        }
+
+        .datacenter td {
+            width: 30px;
+        }
+
+        .datacenter th {
+            text-align: center;
+        }
+
+        table {
+            border: 1px solid whitesmoke;
+            table-layout: fixed;
+            width: 200px;
+        }
+
+        th, td {
+            border: 1px solid whitesmoke;
+            overflow: hidden;
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            padding: 0;
+        }
+
+        .tabs li.tab a {
+            color: #039be5;
+        }
+
+        .tabs .indicator {
+            background-color: #039be5;
+        }
+
+        .tabs li.tab a:hover {
+            color: #039be5;
+        }
+
+        .datacenter .btn,
+        .datacenter .btn-large,
+        .datacenter .btn-flat {
+            margin: 0;
+            padding: 0 2px;
+        }
+
+        .datacenter .modal {
+            width: 40%;
+        }
+    </style>

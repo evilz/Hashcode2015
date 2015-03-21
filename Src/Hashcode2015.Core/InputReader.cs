@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using Hashcode2015.Core.Model;
 using HashCode2015.Model;
-using Kunai.Extentions;
 
 namespace Hashcode2015.Core
 {
     public static class InputReader
     {
-        public static void Parse(string fileName, ref int rowsCount, ref int slotsCount, ref int poolCount,
+	  
+
+	    public static void Parse(Stream inputStream, ref int rowsCount, ref int slotsCount, ref int poolCount,
             out List<Point> deadSlot,
             out List<Server> servers)
         {
-            using (var inputStream = File.OpenRead(fileName))
-            {
-                var reader = new StreamReader(inputStream);
+            var reader = new StreamReader(inputStream);
 
                 // parse first line to get Matrix Size
                 var inputInt = reader.ExtractValues<int>().ToArray();
@@ -37,7 +36,7 @@ namespace Hashcode2015.Core
                         .Select(i => new { index = i, values = reader.ExtractValues<int>().ToArray() })
                         .Select(x => new Server(x.index, x.values[0], x.values[1]))
                         .ToList();
-            }
+            
         }
     }
 }

@@ -11,7 +11,8 @@
     <AssemblyName>Hashcode2015.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,19 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Helpers.cs" />
     <Compile Include="InputReader.cs" />
     <Compile Include="Model\DataCenter.cs" />
-    <Compile Include="Model\Group.cs" />
+    <Compile Include="Model\Point.cs" />
+    <Compile Include="Model\Pool.cs" />
     <Compile Include="Model\Row.cs" />
     <Compile Include="Model\RowSlot.cs" />
     <Compile Include="Model\Server.cs" />
@@ -51,10 +44,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kunai\Kunai.csproj">
-      <Project>{325b8717-3442-43c3-9dd9-2bde811798dc}</Project>
-      <Name>Kunai</Name>
-    </ProjectReference>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

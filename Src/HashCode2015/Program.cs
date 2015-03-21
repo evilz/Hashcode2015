@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using Hashcode2015.Core;
+using Hashcode2015.Core.Model;
 using HashCode2015.Model;
 
 namespace HashCode2015
@@ -22,19 +21,16 @@ namespace HashCode2015
 
             List<Server> servers;
             List<Point> deadSlots;
-            
-           InputReader.Parse(FILE_NAME, ref rowsCount, ref slotsCount, ref poolCount,out deadSlots, out servers);
 
+            using (var sr = File.OpenRead(FILE_NAME))
+            {
+                InputReader.Parse(sr, ref rowsCount, ref slotsCount, ref poolCount, out deadSlots, out servers);
+            }
 
 
 
             var datacenter = new DataCenter(rowsCount, slotsCount, deadSlots, poolCount,servers);
             datacenter.ArrangeServers();
-
-           datacenter.DisplayGrid();
-          //  datacenter.DisplayEmptySlot();
-            
-            Debug.Print(servers.Count(server => server.IsUsed).ToString());
 
             Console.ReadLine();
         }

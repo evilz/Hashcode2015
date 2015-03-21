@@ -1,0 +1,222 @@
+﻿@using System.Threading.Tasks
+@using HashCode2015.Model
+@model DataCenter
+
+@helper  GetPoolColor(int i)
+{
+		var colorClass = new[]
+	{
+		"red",
+		"pink",
+		"purple",
+		"deep-purple",
+		"indigo",
+		"blue",
+		"light-blue",
+		"cyan",
+		"teal",
+		"green",
+		"light-green",
+		"lime",
+		"yellow",
+		"amber",
+		"orange",
+		"deep-orange",
+		"brown",
+		"grey",
+		"blue-grey"
+	};
+
+		var colorNuance = new[] { string.Empty, "lighten-3", "darken-4" };
+		var j = i % colorClass.Length;
+		var k = i / colorClass.Length;
+
+			<text>@colorClass[j] @colorNuance[k]</text>
+}
+
+
+<div class="container">
+	<div class="section">
+
+		<div class="row ">
+			<div class="col s12">
+				<ul class="tabs">
+					<li class="tab col s3 text-light-blue text-lighten-1"><a class="active" href="#datacenter">Data center</a></li>
+					<li class="tab col s3"><a href="#unused">Unused servers</a></li>
+					<li class="tab col s3"><a href="#pools">Pool capacity</a></li>
+
+				</ul>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="section">
+
+		<div id="datacenter" class="col s12" style="overflow: auto;">
+
+			<div class="row">
+				<div class="col s12 m12">
+					<table class="datacenter">
+						<tr>
+							<th></th>
+							@for (int i = 0; i < Model.Rows[0].RowGrid.Length; i++)
+							{
+							<th>@i</th>
+							}
+						</tr>
+
+						@foreach (var r in Model.Rows)
+						{
+						<tr>
+							<td>@r.Index</td>
+
+							@for (int i = 0; i < r.RowGrid.Length; i++)
+								{
+									var css = string.Empty;
+									var content = string.Empty;
+									var colspan = 1;
+									if (r.RowGrid[i] == Row.DEAD_SLOT)
+									{
+								<td><h5 class="red-text text-darken-2"><i class="mdi-action-highlight-remove"></i></h5></td>
+									}
+									else if (r.RowGrid[i] == Row.EMPTY_SLOT)
+									{
+
+								<td><h5 class="yellow-text text-darken-2"><i class="mdi-av-explicit"></i></h5></td>
+
+									}
+									else
+									{
+										var server = r.Servers.First(s => s.Index == r.RowGrid[i]);
+
+										// content = "Server " + server.Index;
+										colspan = server.Size;
+
+								<td colspan="@colspan">
+									<a class="waves-effect waves-light  btn modal-trigger @GetPoolColor(server.Pool.Index)" style="display: inline-block; width: 100%;"
+									   href="#modal-@server.Index">@server.Index</a>
+
+									<!-- Modal Structure -->
+									<div id="modal-@server.Index" class="modal modal-fixed-footer">
+
+										<div class="modal-content left-align">
+											<h4>Server @server.Index</h4>
+
+											<ul class="collection">
+												<li><a href="#!" class="collection-item">Size<span class="badge">@server.Size</span></a></li>
+												<li><a href="#!" class="collection-item">Capacity<span class="badge">@server.Capacity</span></a></li>
+												<li><a href="#!" class="collection-item">Row<span class="badge">@server.Row</span></a></li>
+												<li><a href="#!" class="collection-item">Slot<span class="badge">@server.Slot</span></a></li>
+												<li><a href="#!" class="collection-item">Pool<span class="badge ">@server.Pool.Index</span></a></li>
+											</ul>
+
+										</div>
+										<div class="modal-footer">
+											<a href="#" class="waves-effect waves-red btn-flat modal-action modal-close">Close</a>
+										</div>
+									</div>
+								</td>
+
+									}
+
+									i = i + (colspan - 1);
+								}
+
+						</tr>
+
+						}
+
+					</table>
+
+				</div>
+			</div>
+		</div>
+
+		<div id="unused" class="container row">
+			<div class="col s12">
+				<h2 class="header">@Model.AllServers.Count(s => !s.IsUsed) are unsed on @Model.AllServers.Count() servers</h2>
+				<ul class="collection">
+
+					@{
+                            var larger = Model.AllServers.Where(s => !s.IsUsed).Max(s => s.Size);
+                            var best = Model.AllServers.Where(s => !s.IsUsed).Max(s => s.Capacity);
+					}
+					@foreach (var s in Model.AllServers.Where(s => !s.IsUsed))
+                        {
+
+					<li class="collection-item">
+						<span class="title">Server @s.Index</span>
+
+
+						<div>
+							<span class="badge ">Size : @s.Size</span>
+							<div class="progress">
+								<div class="determinate" style="width: @(s.Size/(float) larger*100)%"></div>
+							</div>
+						</div>
+
+						<div>
+							<span class="badge ">Capacity : @s.Capacity</span>
+							<div class="progress">
+								<div class="determinate" style="width: @(s.Capacity/(float) best*100)%"></div>
+							</div>
+						</div>
+					</li>
+
+                        }
+				</ul>
+			</div>
+
+		</div>
+
+		<div id="pools" class="container row">
+			<div class="col s12">
+				<h2 class="header">Garantited capacity : @Model.GarantedCapacity <i class="mdi-hardware-memory"></i></h2>
+				<ul class="collection">
+
+					@{
+						var rowCount = Model.Rows.Count();
+					}
+					@foreach (var p in Model.Pools)
+					{
+
+						<li class="collection-item">
+							<span class="title">Pool @p.Index</span>
+
+
+							<div>
+								<span class="badge "><b>@p.GetGarantedCapacity(rowCount)</b> / @p.TotalCapacity</span>
+								<div class="progress" style="width: @(Model.GarantedCapacity/(float) p.TotalCapacity*100)%">
+									<div class="determinate" style="width: @(p.GetGarantedCapacity(rowCount)/(float) p.TotalCapacity*100)%"></div>
+								</div>
+							</div>
+							<br />
+
+							<a class="waves-effect waves-light  btn modal-trigger @GetPoolColor(p.Index)"
+							   href="#"><i class="mdi-hardware-memory"></i>@p.Servers.Count()servers</a>
+
+						</li>
+
+					}
+				</ul>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+			$('.modal-trigger').leanModal();
+		});
+	</script>
+}

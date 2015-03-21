@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using Hashcode2015.Core.Model;
 
 namespace HashCode2015.Model
 {
@@ -17,7 +17,7 @@ namespace HashCode2015.Model
 
         public List<Row> Rows { get; private set; }
 
-        public DataCenter(int rowCount, int slotCount, List<Point> deadSlots, int poolCount, List<Server> allServers )
+        public DataCenter(int rowCount, int slotCount, List<Point> deadSlots, int poolCount, List<Server> allServers)
         {
             //create pools
             _pools.AddRange(Enumerable.Range(0, poolCount).Select(i => new Pool(i)));
@@ -44,8 +44,13 @@ namespace HashCode2015.Model
 
         public void ArrangeServers()
         {
-           
-            //sort by capacity/size
+            ArrangeInPoolFirst();
+        }
+
+        // SCORE OF 368 !
+        private void ArrangeInPoolFirst()
+        {
+//sort by capacity/size
             var serversByScoreAndSize = AllServers.OrderByDescending(s => s.Score).ThenByDescending(s => s.Size);
 
             // put server in group to equilibrate Pool capacity
@@ -61,36 +66,39 @@ namespace HashCode2015.Model
                     if (row.TryAddServer(server))
                         break;
                 }
-
             }
-
-
-            // take jamar code !
-
         }
 
-        public void DisplayGrid()
+        private void ArrangeInRowFirst()
         {
-            foreach (var server in AllServers)
+            //sort by capacity/size
+            var serversByScoreAndSize = AllServers.OrderByDescending(s => s.Score).ThenBy(s => s.Size);
+
+            foreach (var server in serversByScoreAndSize)
             {
-                Console.WriteLine(server);
+                var rowsOrderedForPoolCapacity = Rows.OrderBy(r => r.TotalCapacity);
+
+                foreach (var row in rowsOrderedForPoolCapacity)
+                {
+                    if (row.TryAddServer(server))
+                        break;
+                }
+            }
+
+            var serverInRows = Rows.SelectMany(r => r.Servers);
+
+            while (Rows.Any(r => r.Servers.Any(s => !s.IsUsed)))
+            {
+                // get lowest capacity pool
+               var pool = Pools.OrderBy(p => p.TotalCapacity).First();
+               var server = Rows.SelectMany(r => r.Servers.Where(s => !s.IsUsed)).OrderByDescending(s=>s.Score).First();
+
+                pool.Servers.Add(server);
+                server.IsUsed = true;
+                server.Pool = pool;
             }
         }
-
-        public void DisplayEmptySlot()
-            {
-           
-                foreach (var row in Rows)
-                {
-
-                    Console.WriteLine("{0} : ", row.Index);
-                    foreach (var slot in row.AvailableSlot  )
-                    {
-                        Console.WriteLine("\t{0} - {1}",slot.Position, slot.Size);
-                    }
-                }   
-            }
-
+		
         public void PutServerAt(Server server, int row, int slot)
         {
             server.Row = row;
@@ -98,7 +106,15 @@ namespace HashCode2015.Model
             server.IsUsed = true;
             var currentRow = Rows[row];
             currentRow.PutServerAt(server, slot);
-           
+
+        }
+
+        public int GarantedCapacity
+        {
+            get
+            {
+                return Pools.Min(p => p.GetGarantedCapacity(Rows.Count));
+            }
         }
     }
 }

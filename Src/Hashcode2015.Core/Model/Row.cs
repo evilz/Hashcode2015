@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Kunai.Enumerable;
+using Hashcode2015.Core;
 
 namespace HashCode2015.Model
 {
@@ -11,7 +11,7 @@ namespace HashCode2015.Model
 
         private readonly int _slotCount;
         public int[] RowGrid { get; private set; }
-        private readonly List<Server> _servers;
+        public List<Server> Servers { get; private set; }
 
 
         public int Index { get; set; }
@@ -24,7 +24,7 @@ namespace HashCode2015.Model
             RowGrid = new int[slotCount];
             Enumerable.Range(0,slotCount).ForEach(i => RowGrid[i] = EMPTY_SLOT);
             
-            _servers = new List<Server>();
+            Servers = new List<Server>();
             
             var deadCell1 = deadCell.ToList();
             deadCell1.ForEach(i => RowGrid[i] = DEAD_SLOT);
@@ -33,7 +33,7 @@ namespace HashCode2015.Model
 
         private IEnumerable<Server> GetServersForPool(Pool pool)
         {
-            return _servers.Where(s => s.Pool == pool);
+            return Servers.Where(s => s.Pool == pool);
         }
 
         public int GetCapacityForPool(Pool pool)
@@ -42,6 +42,10 @@ namespace HashCode2015.Model
             return capacity;
         }
 
+        public int TotalCapacity
+        {
+            get { return Servers.Sum(s => s.Capacity); }
+        }
 
         // slot x, size
         public IEnumerable<RowSlot> AvailableSlot
@@ -58,6 +62,7 @@ namespace HashCode2015.Model
                     {
                         if (slot.IsNew())
                         {
+                            result.Add(slot);
                             slot.Position = i;
                             slot.Size = 0;
                         }
@@ -67,10 +72,10 @@ namespace HashCode2015.Model
                     {
                         if (!slot.IsNew()) // end of slot
                         {
-                            result.Add(slot);
                             slot = new RowSlot();
                         }
                     }
+                    
                 }
                 return result;
             }
@@ -85,7 +90,7 @@ namespace HashCode2015.Model
                 server.Slot = slot.Position;
                 server.Row = Index;
                 server.IsUsed = true;
-                _servers.Add(server);
+                Servers.Add(server);
 
                 for (int i = server.Slot; i < server.Slot + server.Size; i++)
                 {
@@ -102,6 +107,10 @@ namespace HashCode2015.Model
 
         public void PutServerAt(Server server, int slot)
         {
+	        if (!Servers.Contains(server))
+	        {
+		        Servers.Add(server);
+	        }
             for (int i = slot; i < slot + server.Size; i++)
             {
                 RowGrid[i] = server.Index;
