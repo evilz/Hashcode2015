@@ -25,12 +25,9 @@ namespace Hashcode2015.Core
 		{
 			// NOT in PCL :(
 			var converter = TypeDescriptor.GetConverter(typeof(T));
-			if (converter != null)
-			{
-			    //Cast ConvertFromString(string text) : object to (T)
-			    return (T)converter.ConvertFromString(input);
-			}
-			return default(T);
+		    //Cast ConvertFromString(string text) : object to (T)
+		    return (T)converter.ConvertFromString(input);
+		    return default(T);
 		}
 
         public static IEnumerable<T> ExtractValues<T>(this string input, char separator = ' ')
