@@ -36,6 +36,7 @@ namespace Hashcode2015.Core
 			var converter = TypeDescriptor.GetConverter(typeof(T));
 		    //Cast ConvertFromString(string text) : object to (T)
 		    return (T)converter.ConvertFromString(input);
+		    return default(T);
 		}
 
         public static IEnumerable<T> ExtractValues<T>(this string input, char separator = ' ')

@@ -27,15 +27,8 @@
 		"ef": "EntityFramework.Commands"
 	},
 	"frameworks": {
-		"aspnet50": {
-			"dependencies": {
-				"Hashcode2015.Core": "1.0.0-*"
-			}
-		}
-		//"aspnetcore50": {
-		//"dependencies": {
-		//		"Hashcode2015.Core": "1.0.0-*"
-		//	}}
+		"aspnet50": {},
+		"aspnetcore50": {}
 	},
     "exclude": [
         "wwwroot",

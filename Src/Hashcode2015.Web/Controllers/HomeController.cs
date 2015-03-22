@@ -1,28 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using Hashcode2015.Core;
 using Hashcode2015.Core.Model;
 using HashCode2015.Model;
-using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Interfaces;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity.Query;
 
 namespace Hashcode2015.Web.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly IHostingEnvironment _env;
-
-		public HomeController(IHostingEnvironment env)
-		{
-			_env = env;
-		}
-
 		public IActionResult Index(string error)
 		{
 			return View("Index", error);
@@ -59,11 +47,8 @@ namespace Hashcode2015.Web.Controllers
 			
 			//var filePath = Path.Combine("inputFiles", inputFilename);
 
-			Stream inStream = null;
-			if (inputFile == 1)
-				inStream = InputFile.explanationFile.AsStream();
-			else
-				inStream = InputFile.qualificationFile.AsStream();
+			Stream inStream;
+			inStream = inputFile == 1 ? InputFile.explanationFile.AsStream() : InputFile.qualificationFile.AsStream();
 			
 
 			InputReader.Parse(inStream, ref rowsCount, ref slotsCount, ref poolCount, out deadSlots, out servers);
