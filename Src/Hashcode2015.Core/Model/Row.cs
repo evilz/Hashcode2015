@@ -105,7 +105,35 @@ namespace HashCode2015.Model
             return server.IsUsed;
         }
 
-        public void PutServerAt(Server server, int slot)
+		// perfect fit else the largest
+		public bool TryAddServer2(Server server)
+		{
+			// perfect fit
+			var slot = AvailableSlot.FirstOrDefault(a => a.Size == server.Size);
+
+
+			slot = AvailableSlot.OrderByDescending(a=>a.Size).FirstOrDefault(a => a.Size >= server.Size);
+			if (slot != null)
+			{
+				server.Slot = slot.Position;
+				server.Row = Index;
+				server.IsUsed = true;
+				Servers.Add(server);
+
+				for (int i = server.Slot; i < server.Slot + server.Size; i++)
+				{
+					RowGrid[i] = server.Index;
+				}
+			}
+			else
+			{
+				server.IsUsed = false;
+			}
+
+			return server.IsUsed;
+		}
+
+		public void PutServerAt(Server server, int slot)
         {
 	        if (!Servers.Contains(server))
 	        {

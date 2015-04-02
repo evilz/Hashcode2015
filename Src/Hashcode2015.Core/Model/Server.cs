@@ -8,6 +8,9 @@
             Size = size;
             Capacity = capacity;
             IsUsed = false;
+
+	        Row = -1;
+	        Slot = -1;
         }
 
         public bool IsUsed { get; set; }

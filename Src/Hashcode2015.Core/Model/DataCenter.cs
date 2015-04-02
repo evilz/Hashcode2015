@@ -44,7 +44,8 @@ namespace HashCode2015.Model
 
         public void ArrangeServers()
         {
-            ArrangeInPoolFirst();
+            //ArrangeInPoolFirst();
+			ArrangeInRowFirst();
         }
 
         // SCORE OF 368 !
@@ -76,16 +77,84 @@ namespace HashCode2015.Model
 
             foreach (var server in serversByScoreAndSize)
             {
-                var rowsOrderedForPoolCapacity = Rows.OrderBy(r => r.TotalCapacity);
+				var rowsOrderedForPoolCapacity = Rows.OrderBy(r => r.TotalCapacity);
 
                 foreach (var row in rowsOrderedForPoolCapacity)
                 {
-                    if (row.TryAddServer(server))
+					if (row.TryAddServer2(server)) // perfect or largest
                         break;
                 }
             }
 
-            var serverInRows = Rows.SelectMany(r => r.Servers);
+	        var wantedCapacity = 420;
+
+	        foreach (var pool in Pools)
+	        {
+		        while (pool.GetGarantedCapacity(Rows.Count) < wantedCapacity)
+		        {
+			        Server selectedServer = null;
+
+					var availableServer = AllServers.Where(s => s.Row >= 0 && s.Pool == null).ToList();
+
+			        if (pool.DeltaServer == null)
+			        {
+				        var server = availableServer.OrderByDescending(s => s.Capacity).First();
+				        pool.Servers.Add(server);
+				        server.IsUsed = true;
+				        server.Pool = pool;
+				        continue;
+			        }
+			        else
+			        {
+				        // qui n est pas sur la ligne du delta
+				        // dont la sum des capacity du pool sur la meme ligne + lui meme est inferieur ou egal a celle du delta
+				        // sort descending by capacity
+				        var pool1 = pool;
+				        var interrestingServers = availableServer.Where(s => s.Row != pool.DeltaServer.Row)
+					        .Where(s => CheckRowCapacity(s,pool1))
+							.OrderByDescending(s => s.Capacity);
+
+				        var perfect =
+					        interrestingServers.Where(
+						        s => pool1.TotalCapacity + s.Capacity <= wantedCapacity + pool1.DeltaServer.Capacity).ToList();
+
+
+						if (perfect.Any())
+						{
+							//si y en a on prend un de ceux qui on la plus grosse capacity
+							selectedServer = perfect.First();
+						}
+
+						else if (interrestingServers.Any())
+				        {
+							//si y en a on prend un de ceux qui on la plus grosse capacity
+							selectedServer = interrestingServers.First();
+						}
+						
+			        }
+
+
+					//      var g = pool.GetGarantedCapacity(Rows.Count);
+					//var delta = wantedCapacity - g;
+
+					//// NON IL FAUT AUGMENTER LA CAPACITY GARANTIE !!!
+					// selectedServer = availableServer.FirstOrDefault(s => s.Capacity == delta);
+
+					//if (selectedServer == null)
+					//{
+					//	selectedServer = availableServer.OrderByDescending(s => s.Capacity).First();
+					//}
+					if (selectedServer != null)
+					{
+						pool.Servers.Add(selectedServer);
+			       
+				        selectedServer.IsUsed = true;
+				        selectedServer.Pool = pool;
+			        }
+		        
+				}
+	        }
+
 
             while (Rows.Any(r => r.Servers.Any(s => !s.IsUsed)))
             {
@@ -98,8 +167,15 @@ namespace HashCode2015.Model
                 server.Pool = pool;
             }
         }
+
+		private bool CheckRowCapacity(Server s, Pool pool1)
+		{
+			var t = pool1.GetCapacityOnRow(s.Row);
+			var t2 = t + s.Capacity;
+            return t2 <= pool1.DeltaServer.Capacity;
+		}
 		
-        public void PutServerAt(Server server, int row, int slot)
+	    public void PutServerAt(Server server, int row, int slot)
         {
             server.Row = row;
             server.Slot = slot;

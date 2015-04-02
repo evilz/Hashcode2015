@@ -6,8 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-
-namespace Hashcode2015.Core
+namespace Hashcode2015.TestRound.App
 {
 	public static class Helpers
     {
@@ -45,6 +44,30 @@ namespace Hashcode2015.Core
             var result = splited.Select(Convert<T>);
             return result;
         }
+
+
+		public static TMatrix[,] CreateMatrix<TMatrix, TVal>(this StreamReader reader, Size matrixSize, Func<int, int, TVal, TMatrix[,], TMatrix> matcher)
+		{
+			int y = 0, x = 0;
+			var matrix = new TMatrix[matrixSize.Height, matrixSize.Width];
+
+			var line = reader.ReadLine();
+
+			while (!string.IsNullOrEmpty(line))
+			{
+				x = 0;
+				foreach (var col in line)
+				{
+					var val = col.ToString().Convert<TVal>();
+					matrix[y, x] = matcher(y, x, val, matrix);
+					x++;
+				}
+				y++;
+				line = reader.ReadLine();
+			}
+
+			return matrix;
+		}
 
 	}
 }

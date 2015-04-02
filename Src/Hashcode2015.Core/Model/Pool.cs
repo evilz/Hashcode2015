@@ -25,12 +25,22 @@ namespace HashCode2015.Model
 
             for (int r = 0; r < rowCount; r++)
             {
-                var cap = TotalCapacity - Servers.Where(s => s.Row == r).Sum(x => x.Capacity);
+                var cap = TotalCapacity - GetCapacityOnRow(r);
                 capacityWhenDown[r] = cap;
             }
 
             return capacityWhenDown.Min(x => x.Value);
         }
+
+	    public Server DeltaServer
+	    {
+		    get { return Servers.OrderByDescending(s => s.Capacity).FirstOrDefault(); }
+	    }
+
+	    public int GetCapacityOnRow(int r)
+	    {
+		    return Servers.Where(s => s.Row == r).Sum(x => x.Capacity);
+	    }
     }
 
 
