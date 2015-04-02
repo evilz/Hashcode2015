@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Hashcode2015.TestRound.App
 {
@@ -68,6 +71,18 @@ namespace Hashcode2015.TestRound.App
 
 			return matrix;
 		}
+
+		public static T CloneJson<T>(this T source)
+		{
+			// Don't serialize a null object, simply return the default for that object
+			if (Object.ReferenceEquals(source, null))
+			{
+				return default(T);
+			}
+
+			return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source));
+		}
+
 
 	}
 }

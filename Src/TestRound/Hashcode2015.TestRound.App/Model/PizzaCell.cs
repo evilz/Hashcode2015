@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Hashcode2015.TestRound.App.Model
 {
@@ -14,12 +9,17 @@ namespace Hashcode2015.TestRound.App.Model
 		public PizzaCell(char type)
 		{
 			_type = type;
+			//PossibleParts = new List<PizzaPart>();
 		}
 
 		public bool IsHam => _type == 'H';
 
+		public bool Analyzed { get; set; }
+
 		public bool IsInPart { get; set; }
 
-		public List<PizzaPart> PossibleParts {get; set; } 
+		//public List<PizzaPart> PossibleParts {get; set; } 
+		
+		public List<int> Used { get;private set; } = new List<int>(); 
 	}
 }

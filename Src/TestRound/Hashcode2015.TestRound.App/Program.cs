@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using Hashcode2015.TestRound.App.Model;
 using Kunai.Extentions;
@@ -12,6 +14,9 @@ namespace Hashcode2015.TestRound.App
 {
 	class Program
 	{
+		private static int bestScore = 0;
+		private static int bestPartcount = 0;
+		private static int scoreCount = 0;
 		static void Main(string[] args)
 		{
 			using (var stream = File.OpenText(@"..\..\..\Input\test_round.in"))
@@ -70,32 +75,120 @@ namespace Hashcode2015.TestRound.App
 			List<PizzaPart> final = new List<PizzaPart>();
 			input.Pizza.ForEach((cell, point) =>
 			{
-				cell.PossibleParts = GetAllPossiblePart(point.Y, point.X, input);
-				allPosibilities.AddRange(cell.PossibleParts);
+				//cell.PossibleParts = GetAllPossiblePart(point.Y, point.X, input);
+				//allPosibilities.AddRange(cell.PossibleParts);
+				var t = GetAllPossiblePart(point.Y, point.X, input);
+				allPosibilities.AddRange(t);
 			});
 
-			var allcell = allPosibilities.SelectMany(p => p.Cells).Distinct();
+			allPosibilities = allPosibilities.OrderByDescending(p => p.CellCount).ToList();
+			//var Trees = allPosibilities.Select(part => new Node<PizzaPart>(part)).ToList();
 
-			while (allPosibilities.Any())
+			//foreach (var tree in Trees)
+			//{
+			//	CreateAllSoutionFrom(tree, allPosibilities);
+			//}
+
+			//Parallel.ForEach(allPosibilities, part => 
+			foreach(var part in allPosibilities)
 			{
-
-				var sorted = allPosibilities.OrderByDescending(p => p.CellCount);
-				var first = sorted.First();
-				final.Add(first);
-
-				//allPosibilities = allPosibilities
-				//	.Where(p => (p.Start.Y >= first.Start.Y && p.Start.Y <= first.End.Y)   // CREATE a between extention !!!!
-				//				&& (p.End.Y >= first.Start.Y && p.Start.Y <= first.End.Y)
-
-
-				//	.ToList();
-
+				var node = new Node<PizzaPart>(part);
+                CreateAllSoutionFrom(node, allPosibilities);
 			}
+			//);
+
+			// VISIT NODE !!!
+
+			//while (allPosibilities.Any())
+			//{
 
 
+			//	var sorted = allPosibilities.OrderByDescending(p => p.CellCount);
+			//	var first = sorted.First();
+			//	final.Add(first);
+
+			//	foreach (var cell in first.Cells)
+			//		cell.Analyzed = true;
+
+			//	allPosibilities = allPosibilities
+			//		.Where(p => !p.Cells.Any(c => c.Analyzed))
+			//		.ToList();
+			//}
+
+			//var score = final.Sum(x => x.CellCount);
 
 			return null;
 		}
+
+		private static void CreateAllSoutionFrom(Node<PizzaPart> lastNode, List<PizzaPart> availParts )
+		{
+			foreach (var cell in lastNode.Value.Cells)
+				cell.Analyzed = true;
+
+			var avail = availParts
+				.Where(p => !p.Cells.Any(c => c.Analyzed))
+				.ToList();
+
+			//foreach (var cell in lastNode.Value.Cells)
+			//	cell.Used.Add(Thread.CurrentThread.ManagedThreadId);
+			//var avail = availParts
+			//	.Where(p => !p.Cells.Any(c => c.Used.Contains(Thread.CurrentThread.ManagedThreadId)))
+			//	.ToList();
+			
+			if (avail.Any())
+			{
+				foreach (var part in avail)
+				{
+					var node = new Node<PizzaPart>(part,lastNode);
+					lastNode.Childs.Add(node);
+					CreateAllSoutionFrom(node, avail);
+				}
+			}
+			else
+			{
+				var currentNode = lastNode;
+				List<PizzaPart> sol = new List<PizzaPart>();
+				sol.Add(currentNode.Value);
+				while (currentNode.Parent != null)
+				{
+					sol.Add(currentNode.Parent.Value);
+					currentNode = currentNode.Parent;
+				}
+				
+				var score = sol.Sum(x => x.CellCount);
+				var partcount = sol.Count;
+				scoreCount++;
+				Console.Clear();
+				Console.WriteLine(bestScore + " cells in " + bestPartcount);
+				Console.WriteLine(scoreCount);
+				if (score >= bestScore)
+				{
+					bestScore = score;
+					bestPartcount = partcount;
+					Console.Clear();
+					Console.WriteLine(bestScore + " cells in " + bestPartcount);
+					Console.WriteLine(scoreCount);
+				}
+			}
+
+		}
+
+
+		private static void CreateAllSoutionFrom2(Node<PizzaPart> tree, List<PizzaPart> availParts)
+		{
+			var avail = availParts.Where(p => p != tree.Value).ToList();
+
+			while (avail.Any())
+			{
+				var part = avail.First();
+				var node = new Node<PizzaPart>(part);
+				tree.Childs.Add(node);
+
+
+			}
+
+		}
+
 
 		private static List<PizzaPart> GetAllPossiblePart(int y, int x, Input input)
 		{
@@ -103,25 +196,26 @@ namespace Hashcode2015.TestRound.App
 
 			for (int y2 = 0; y2 < input.MaxSize; y2++)	// de 0 a 12
 			{
-				for (int x2 = (input.MaxSize / (y2+1))-1; x2 > 0; x2--) 
+				for (int x2 = (input.MaxSize / (y2 + 1)) - 1; x2 >= 0; x2--)
 				{
 					var part = CreatePart(y, x, y2, x2, input);
-					//if (part.IsValid(input))
-				//	{
+					if (part.IsValid(input))
+					{
 						allParts.Add(part);
-					//}
+					}
 				}
 			}
+
 			return allParts;
 		}
 
-		private static PizzaPart CreatePart(int y, int x, int y2, int x2, Input input)
+		private static PizzaPart CreatePart(int y, int x, int height, int width, Input input)
 		{
-			PizzaPart part = new PizzaPart {Start = new Point(x, y), End = new Point(x2, y2)};
+			PizzaPart part = new PizzaPart { Start = new Point(x, y), End = new Point(x + width, y + height) };
 
-			for (int i = y; i <= y2 && i < input.Rows; i++)
+			for (int i = y; i <= y + height && i < input.Rows; i++)
 			{
-				for (int j = x; j <= x2 && j < input.Columns; j++) // de 0 a 
+				for (int j = x; j <= x + width && j < input.Columns; j++) // de 0 a 
 				{
 					part.Cells.Add(input.Pizza[i, j]);
 				}

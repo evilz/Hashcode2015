@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hashcode2015.TestRound.App.Model
 {
@@ -20,12 +17,16 @@ namespace Hashcode2015.TestRound.App.Model
 		public List<PizzaCell> Cells { get; } 
 
 		public int HamCount {get { return Cells.Count(cell => cell.IsHam); } }
-		public int CellCount {get { return Cells.Count(); } }
+		public int CellCount => Cells.Count();
 
 		public bool IsValid(Input input)
 		{
 			return HamCount == input.MinHam && CellCount <= input.MaxSize;
 		}
-		
+
+		public override string ToString()
+		{
+			return string.Format("Start {0} End {1} Cells  {2} Ham {3}", Start, End, CellCount, HamCount);
+		}
 	}
 }
