@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22609.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Hashcode2015.Web", "Hashcode2015.Web\Hashcode2015.Web.kproj", "{580E9859-B105-4853-8088-8550D5AC4369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashcode2015.Core", "Hashcode2015.Core\Hashcode2015.Core.csproj", "{CBC6E6C3-B18E-4B29-96CB-002C8AA9F5B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashCode2015", "HashCode2015\HashCode2015.csproj", "{72B3F64F-C434-4B2C-BE61-50F90640CAEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kunai", "Kunai\Kunai.csproj", "{325B8717-3442-43C3-9DD9-2BDE811798DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{73A870C3-979A-4FA8-98E9-68CC471D130D}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\299.txt = Samples\299.txt
+		Samples\341.txt = Samples\341.txt
+		Samples\368.txt = Samples\368.txt
+		Samples\dc.in = Samples\dc.in
+		Samples\output.txt = Samples\output.txt
+		Samples\output2.txt = Samples\output2.txt
+		Samples\sample.in = Samples\sample.in
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashcode2015.Charts", "Hashcode2015.Charts\Hashcode2015.Charts.csproj", "{DADE39DA-8C24-482E-9743-E5A93722CED4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestRound", "TestRound", "{553762A0-F601-46BE-B126-BDA5270DEB80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Input", "Input", "{49324647-3447-466B-AA64-DCAA7FCE69B0}"
+	ProjectSection(SolutionItems) = preProject
+		TestRound\Input\test_round.in = TestRound\Input\test_round.in
+		TestRound\Input\test_task_fr_20150327_1550.pdf = TestRound\Input\test_task_fr_20150327_1550.pdf
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashcode2015.TestRound.App", "TestRound\Hashcode2015.TestRound.App\Hashcode2015.TestRound.App.csproj", "{CA7E8C92-58E4-4D77-9462-59F05B47A12D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{580E9859-B105-4853-8088-8550D5AC4369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{580E9859-B105-4853-8088-8550D5AC4369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{580E9859-B105-4853-8088-8550D5AC4369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{580E9859-B105-4853-8088-8550D5AC4369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBC6E6C3-B18E-4B29-96CB-002C8AA9F5B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC6E6C3-B18E-4B29-96CB-002C8AA9F5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC6E6C3-B18E-4B29-96CB-002C8AA9F5B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC6E6C3-B18E-4B29-96CB-002C8AA9F5B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72B3F64F-C434-4B2C-BE61-50F90640CAEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72B3F64F-C434-4B2C-BE61-50F90640CAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72B3F64F-C434-4B2C-BE61-50F90640CAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72B3F64F-C434-4B2C-BE61-50F90640CAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{325B8717-3442-43C3-9DD9-2BDE811798DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{325B8717-3442-43C3-9DD9-2BDE811798DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{325B8717-3442-43C3-9DD9-2BDE811798DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{325B8717-3442-43C3-9DD9-2BDE811798DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DADE39DA-8C24-482E-9743-E5A93722CED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DADE39DA-8C24-482E-9743-E5A93722CED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DADE39DA-8C24-482E-9743-E5A93722CED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DADE39DA-8C24-482E-9743-E5A93722CED4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{49324647-3447-466B-AA64-DCAA7FCE69B0} = {553762A0-F601-46BE-B126-BDA5270DEB80}
+		{CA7E8C92-58E4-4D77-9462-59F05B47A12D} = {553762A0-F601-46BE-B126-BDA5270DEB80}
+	EndGlobalSection
+EndGlobal

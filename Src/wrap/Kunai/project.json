@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "wrappedProject": "../../Kunai/Kunai.csproj",
+      "bin": {
+        "assembly": "../../Kunai/obj/{configuration}/Kunai.dll",
+        "pdb": "../../Kunai/obj/{configuration}/Kunai.pdb"
+      }
+    }
+  }
+}
