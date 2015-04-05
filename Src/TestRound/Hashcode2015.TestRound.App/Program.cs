@@ -1,12 +1,11 @@
 ﻿
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using Hashcode2015.TestRound.App.Model;
 using Kunai.Extentions;
 
@@ -34,8 +33,8 @@ namespace Hashcode2015.TestRound.App
 
 				// part on one line
 				//var parts = DummyExtendLineAlgo(R, C, H, S, matrix);
-				var parts = SmartAlgo(input);
-
+				//var parts = SmartAlgo(input);
+				var parts = BestRandom(input);
 
 				Console.WriteLine(parts.Count);
 				foreach (var p in parts)
@@ -65,8 +64,115 @@ namespace Hashcode2015.TestRound.App
 				var notValid = parts.Where(p => !p.IsValid(input));
 			}
 
+			Console.ReadLine();
+
+		}
 
 
+		private static List<PizzaPart> BestRandom(Input input)
+		{
+			List<PizzaPart> allPosibilities = new List<PizzaPart>();
+
+			int nextX = 0;
+			int nextY = 0;
+			var solution = new Output();
+			var posibilities = allPosibilities;
+			input.Pizza.ForEach((cell, point) =>
+			{
+				var t = GetAllPossiblePart(point.Y, point.X, input);
+				posibilities.AddRange(t);
+			});
+
+
+			// order ONCE !
+			var ordered = posibilities
+				.OrderByDescending(p => p.CellCount)
+				.ThenBy(p => p.Start.X).ThenBy(p => p.Start.Y).ToList();
+
+			for (int i = 0; i < short.MaxValue; i++)
+			{
+				allPosibilities = ordered;
+
+				while (allPosibilities.Any())
+				{
+					// TESTER le DEPART DES 4 COINS
+
+					var max = allPosibilities.First().CellCount; //allPosibilities.Max(p => p.CellCount);
+
+					var x = nextX;
+					var y = nextY;
+
+					var tmp = allPosibilities.AsParallel()
+						.Where(p => (p.Start.X == x) && (p.Start.Y == y));
+
+					PizzaPart selectedPart = null;
+                    if (tmp.Any())
+					{
+						max = tmp.Max(p => p.CellCount);
+						selectedPart = allPosibilities.AsParallel()
+						//.OrderBy(p => p.Start.X).ThenBy(p => p.Start.Y)
+						//.Where(p => p.CellCount == max)
+						.Where(p => (p.Start.X == x) && (p.Start.Y == y))
+						.OrderByDescending(p => p.CellCount)
+						.FirstOrDefault(p => p.CellCount == max);
+					}
+						
+					if (selectedPart == null)
+					{
+						selectedPart = allPosibilities.AsParallel()
+							.OrderBy(p => p.Start.X).ThenBy(p => p.Start.Y)
+							.Where(p => p.CellCount == max)
+							.First();
+					}
+					//.Where(p => p.CellCount == max)
+					//.SelectRandom();
+
+					//.First(p => p.CellCount == max);
+					//.SelectRandom();
+
+
+					nextY = selectedPart.End.Y;
+					nextX = selectedPart.End.X + 1;
+					if (nextX >= input.Columns)
+					{
+						nextY++;
+						nextX = 0;
+					}
+					solution.AddPart(selectedPart);
+
+					Parallel.ForEach(selectedPart.Cells, cell =>
+					{
+						//foreach (var cell in selectedPart.Cells)
+						cell.Analyzed = true;
+					});
+
+				allPosibilities = allPosibilities.AsParallel()
+						.Where(p => !p.Cells.Any(c => c.Analyzed))
+						.ToList();
+				}
+
+				Console.ForegroundColor = solution.Score > bestScore ? ConsoleColor.Green : ConsoleColor.Red;
+
+				if (solution.Score > bestScore)
+				{
+					bestScore = solution.Score;
+					solution.Save();
+                }
+				Console.WriteLine(solution.Score + " in " + solution.Parts.Count + " parts");
+
+				
+				Parallel.ForEach(solution.Parts.SelectMany(p => p.Cells), cell =>
+				{
+					//foreach (var cell in solutionList.SelectMany(p=>p.Cells))
+					cell.Analyzed = false;
+				});
+
+				solution = new Output();
+			}
+
+			
+
+			return null;
 		}
 
 		private static List<PizzaPart> SmartAlgo(Input input)
@@ -89,12 +195,21 @@ namespace Hashcode2015.TestRound.App
 			//	CreateAllSoutionFrom(tree, allPosibilities);
 			//}
 
+			allPosibilities = allPosibilities
+				.Where(p => p.Start.Y.Between(0, 12) && p.End.Y.Between(0, 12)
+				            && p.Start.X.Between(0, 12) && p.End.X.Between(0, 12)).ToList();
+
+
+			
 			//Parallel.ForEach(allPosibilities, part => 
-			foreach(var part in allPosibilities)
+			foreach (var part in allPosibilities)
 			{
 				var node = new Node<PizzaPart>(part);
                 CreateAllSoutionFrom(node, allPosibilities);
 			}
+
+
+
 			//);
 
 			// VISIT NODE !!!
@@ -155,7 +270,7 @@ namespace Hashcode2015.TestRound.App
 					currentNode = currentNode.Parent;
 				}
 				
-				var score = sol.Sum(x => x.CellCount);
+				var score = sol.Sum(p => p.CellCount);
 				var partcount = sol.Count;
 				scoreCount++;
 				Console.Clear();
@@ -172,33 +287,18 @@ namespace Hashcode2015.TestRound.App
 			}
 
 		}
-
-
-		private static void CreateAllSoutionFrom2(Node<PizzaPart> tree, List<PizzaPart> availParts)
-		{
-			var avail = availParts.Where(p => p != tree.Value).ToList();
-
-			while (avail.Any())
-			{
-				var part = avail.First();
-				var node = new Node<PizzaPart>(part);
-				tree.Childs.Add(node);
-
-
-			}
-
-		}
-
-
+		
 		private static List<PizzaPart> GetAllPossiblePart(int y, int x, Input input)
 		{
 			List<PizzaPart> allParts = new List<PizzaPart>();
 
-			for (int y2 = 0; y2 < input.MaxSize; y2++)	// de 0 a 12
+			for (int height = 0; height < input.MaxSize && y + height < input.Rows; height++)	// de 0 a 12
 			{
-				for (int x2 = (input.MaxSize / (y2 + 1)) - 1; x2 >= 0; x2--)
+				for (int width = (input.MaxSize / (height + 1)) -1 ; width >= 0 ; width--)
 				{
-					var part = CreatePart(y, x, y2, x2, input);
+					if(y+height >= input.Rows || x+width >= input.Columns)
+						continue;
+					var part = CreatePart(y, x, height, width, input);
 					if (part.IsValid(input))
 					{
 						allParts.Add(part);
@@ -211,7 +311,7 @@ namespace Hashcode2015.TestRound.App
 
 		private static PizzaPart CreatePart(int y, int x, int height, int width, Input input)
 		{
-			PizzaPart part = new PizzaPart { Start = new Point(x, y), End = new Point(x + width, y + height) };
+			PizzaPart part = new PizzaPart( new Point(x, y),  new Point(x + width, y + height) );
 
 			for (int i = y; i <= y + height && i < input.Rows; i++)
 			{
@@ -258,7 +358,7 @@ namespace Hashcode2015.TestRound.App
 					// Start part
 					else if (input.Pizza[y, x].IsHam)
 					{
-						part = new PizzaPart { Start = new Point(x, y) };
+						part = new PizzaPart (new Point(x, y),new Point(x, y) );
 						part.Cells.Add(input.Pizza[y, x]);
 						input.Pizza[y, x].IsInPart = true;
 					}

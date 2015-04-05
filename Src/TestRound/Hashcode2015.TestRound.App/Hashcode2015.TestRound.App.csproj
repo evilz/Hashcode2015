@@ -50,6 +50,7 @@
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Node.cs" />
     <Compile Include="Model\NodeList.cs" />
+    <Compile Include="Model\Output.cs" />
     <Compile Include="Model\PizzaCell.cs" />
     <Compile Include="Model\PizzaPart.cs" />
     <Compile Include="Program.cs" />
