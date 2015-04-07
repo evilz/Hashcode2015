@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Input", "Input", "{49324647
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashcode2015.TestRound.App", "TestRound\Hashcode2015.TestRound.App\Hashcode2015.TestRound.App.csproj", "{CA7E8C92-58E4-4D77-9462-59F05B47A12D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FinalRound", "FinalRound", "{8B16A0C2-5336-49D5-A381-2E41F60DED09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashcode2015.FinalRound.App", "FinalRound\Hashcode2015.FinalRound.App\Hashcode2015.FinalRound.App.csproj", "{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,10 @@ Global
 		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA7E8C92-58E4-4D77-9462-59F05B47A12D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,5 +79,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{49324647-3447-466B-AA64-DCAA7FCE69B0} = {553762A0-F601-46BE-B126-BDA5270DEB80}
 		{CA7E8C92-58E4-4D77-9462-59F05B47A12D} = {553762A0-F601-46BE-B126-BDA5270DEB80}
+		{FAF9A83A-CB40-4B4B-93A4-CD1BEA8043AA} = {8B16A0C2-5336-49D5-A381-2E41F60DED09}
 	EndGlobalSection
 EndGlobal
